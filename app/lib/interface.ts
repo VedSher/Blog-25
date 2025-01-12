@@ -1,13 +1,13 @@
-export interface simpleBlogCard {
+export interface SimpleBlogCard {
   title: string;
   smallDescription: string;
   currentSlug: string;
-  titleImage: any;
+  titleImage: string | Blob; // Use 'Blob' or 'File' for images
 }
 
-export interface fullBlog {
+export interface FullBlog {
   currentSlug: string;
   title: string;
-  content: any;
-  titleImage: any;
+  content: string; // Assuming content is a string, you can adjust this if it is another type
+  titleImage: string | Blob; // Use 'Blob' or 'File' for images
 }
