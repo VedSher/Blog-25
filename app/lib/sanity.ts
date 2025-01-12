@@ -1,6 +1,5 @@
 import { createClient } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-import { ImageUrlBuilder } from "@sanity/image-url/lib/image"; // Import the type for the imageUrlBuilder
 
 export const client = createClient({
   apiVersion: "2022-03-07",
@@ -9,8 +8,9 @@ export const client = createClient({
   useCdn: false,
 });
 
-const builder: ImageUrlBuilder = imageUrlBuilder(client);
+const builder = imageUrlBuilder(client);
 
+// Define a specific type for the source parameter
 export function urlFor(source: string | { asset: { _ref: string } }): string {
-  return builder.image(source);
+  return builder.image(source).url(); // Ensure you call .url() to get the URL as a string
 }
