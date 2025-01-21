@@ -1,20 +1,21 @@
-import { fullBlog } from "@/app/lib/interface";
+import { FullBlog } from "@/app/lib/interface";
 import { client, urlFor } from "@/app/lib/sanity";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
+// Fetch data from Sanity
 async function getData(slug: string) {
   const query = `
-    *[_type == "blog" && slug.current == '${slug}'] {
+    *[_type == "blog" && slug.current == $slug] {
         "currentSlug": slug.current,
-          title,
-          content,
-          titleImage
-      }[0]`;
+        title,
+        content,
+        titleImage
+    }[0]`;
 
-  const data = await client.fetch(query);
+  const data = await client.fetch(query, { slug });
   return data;
 }
 
@@ -23,7 +24,17 @@ export default async function BlogArticle({
 }: {
   params: { slug: string };
 }) {
-  const data: fullBlog = await getData(params.slug);
+  // Ensure data is fetched and properly typed
+  const data = (await getData(params.slug)) as FullBlog;
+
+  // Handle case where no data is found
+  if (!data) {
+    return (
+      <div className="mt-8 text-center">
+        <h1 className="text-2xl font-bold">Blog not found</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-8">
